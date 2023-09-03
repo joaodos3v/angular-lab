@@ -1,0 +1,66 @@
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HousingLocationComponent } from '../housing-location/housing-location.component';
+import { HousingLocation } from '../housinglocation';
+import { HousingService } from '../housing.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, HousingLocationComponent, ReactiveFormsModule],
+  template: `
+    <section>
+      <form>
+        <input type="text" placeholder="Filter by city" [formControl]="searchTerm" />
+        <button class="primary" type="button" (click)="searchByTerm()">Search</button>
+      </form>
+    </section>
+    <section class="results">
+      <ng-template [ngIf]="!hasFilter" [ngIfElse]="filteredHousingLocation" ;>
+        <app-housing-location
+          *ngFor="let housingLocation of housingLocationList"
+          [housingLocation]="housingLocation"
+        ></app-housing-location>
+      </ng-template>
+      <ng-template #filteredHousingLocation>
+        <app-housing-location
+          *ngFor="let housingLocation of housingLocationFilteredList"
+          [housingLocation]="housingLocation"
+        ></app-housing-location>
+      </ng-template>
+    </section>
+  `,
+  styleUrls: ['./home.component.css'],
+})
+export class HomeComponent {
+  hasFilter = false;
+  housingLocationList: HousingLocation[] = [];
+  housingLocationFilteredList: HousingLocation[] = [];
+  housingService: HousingService = inject(HousingService);
+  searchTerm = new FormControl('');
+
+  constructor() {
+    this.housingLocationList = this.housingService.getAllHousingLocations();
+  }
+
+  hasSearchTerm(value: string, searchTerm: string | null) {
+    if (!searchTerm) return false;
+    return value?.includes(searchTerm);
+  }
+
+  searchByTerm() {
+    if (!this.searchTerm.value) {
+      this.hasFilter = false;
+      return;
+    }
+
+    this.hasFilter = true;
+    this.housingLocationFilteredList = this.housingLocationList.filter(
+      ({ name, city, state }) =>
+        this.hasSearchTerm(name, this.searchTerm.value) ||
+        this.hasSearchTerm(city, this.searchTerm.value) ||
+        this.hasSearchTerm(state, this.searchTerm.value)
+    );
+  }
+}
