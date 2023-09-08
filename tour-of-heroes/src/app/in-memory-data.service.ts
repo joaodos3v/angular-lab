@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
+import { InMemoryDbService } from 'angular-in-memory-web-api';
 import { HEROES } from './mock-heroes';
 import { Hero } from './hero';
 
@@ -7,8 +7,6 @@ import { Hero } from './hero';
   providedIn: 'root',
 })
 export class InMemoryDataService implements InMemoryDbService {
-  constructor() {}
-
   createDb() {
     return { heroes: HEROES };
   }
