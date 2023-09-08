@@ -10,7 +10,7 @@ export class InMemoryDataService implements InMemoryDbService {
   constructor() {}
 
   createDb() {
-    return { HEROES };
+    return { heroes: HEROES };
   }
 
   // Overrides the genId method to ensure that a hero always has an id.
