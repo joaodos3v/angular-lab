@@ -53,6 +53,16 @@ export class HeroService {
     );
   }
 
+  /** DELETE: delete the hero from the server */
+  deleteHero(heroId: number): Observable<Hero> {
+    const url = `${this.heroesUrl}/${heroId}`;
+
+    return this.http.delete<Hero>(url, this.httpOptions).pipe(
+      tap((_) => this.log(`deleted hero id=${heroId}`)),
+      catchError(this.handleError<Hero>('deleteHero'))
+    );
+  }
+
   // TODO: add getHeroNo404() method included in the sample source code.
 
   /**

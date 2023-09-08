@@ -32,4 +32,11 @@ export class HeroesComponent implements OnInit {
       .addHero({ name } as Hero)
       .subscribe((hero) => this.heroes.push(hero));
   }
+
+  delete(hero: Hero, event: MouseEvent): void {
+    event.stopPropagation();
+
+    this.heroes = this.heroes.filter((h) => h !== hero);
+    this.heroService.deleteHero(hero.id);
+  }
 }
